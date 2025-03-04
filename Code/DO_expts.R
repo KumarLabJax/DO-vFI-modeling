@@ -16,11 +16,6 @@ DO_resIV <- model_selection(data = dfDO, yname = "AgeAtVid" ,models = c("lm", "r
 B6_resIV <- model_selection(data = dfB6, yname = "AgeAtVid",models = c("lm","rf","xgb"), seed = 1)
 B6DO_resIV <- model_selection(data = dfvideo, yname = "AgeAtVid",models = c("lm","rf","xgb"), seed = 1)
 
-#Saved results from the manuscript for reproducibility
-DO_model_selection_age <- readRDS("Results/DO_model_selection_age.rds")
-B6_model_selection_age <- readRDS("Results/B6_model_selection_age.rds")
-B6DO_model_selection_age <- readRDS("Results/B6DO_model_selection_age.rds")
-
 plot_compare_data(B6_results = B6_model_selection_age, DO_results = DO_model_selection_age, combined_results = B6DO_model_selection_age, metric = "MAE", yname = "AgeAtVid")
 
 #V: Buiding vFI clocks for B6, DO, and combined B6-DO datasets for comparison (Do this on HPC)
@@ -29,21 +24,12 @@ DO_resV <- model_selection(data = dfDO, yname = "score",models = c("lm","rf","xg
 B6_resV <- model_selection(data = dfB6, yname = "score",models = c("lm","rf","xgb"), seed = 1)
 B6DO_resV <- model_selection(data = dfvideo, yname = "score", models = c("lm","rf","xgb"), seed = 1)
 
-#Saved results from the manuscript for reproducibility
-DO_model_selection_score <- readRDS("Results/DO_model_selection_score.rds")
-B6_model_selection_score <- readRDS("Results/B6_model_selection_score.rds")
-B6DO_model_selection_score <- readRDS("Results/B6DO_model_selection_score.rds")
-
 plot_compare_data(B6_results = B6_model_selection_score, DO_results = DO_model_selection_score, combined_results = B6DO_model_selection_score, metric = "RMSE", yname = "score")
 
 #VI: Comparing age prediction using video features to age prediction using manual frailty items (Do this on HPC)
 
 video_age <- model_selection(data = masterdf, yname = "AgeAtVid", models = c("lm", "rf", "xgb"), seed = 240304, strain = c("B6", "DO"), feature_type = "video")
 frailty_age <- model_selection(data = masterdf, yname = "AgeAtVid", models = c("lm", "rf", "xgb"), seed = 240304, strain = c("B6", "DO"), feature_type = "frailty")
-
-#Saved results from the manuscript for reproducibility
-all_video_age <- readRDS("Results/all_video_age.rds")
-all_frailty_age <- readRDS("Results/all_frailty_age.rds")
 
 all_video_age$metrics |> group_by(Model) |> summarize(mean_rmse = mean(RMSE), mean_mae = mean(MAE), mean_r2 = mean(R2), sd_rmse = sd(RMSE), sd_mae = sd(MAE), sd_r2 = sd(R2))
 all_frailty_age$metrics |> group_by(Model) |> summarize(mean_rmse = mean(RMSE), mean_mae = mean(MAE), mean_r2 = mean(R2), sd_rmse = sd(RMSE), sd_mae = sd(MAE), sd_r2 = sd(R2))
